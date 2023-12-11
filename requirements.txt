@@ -1,0 +1,10 @@
+pandas
+spotipy
+pyvis
+numpy 
+altair
+plotly
+requests
+networkx
+matplotlib
+plotly
