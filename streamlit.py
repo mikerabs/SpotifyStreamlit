@@ -113,8 +113,9 @@ def create_feature_bin_counts_df(original_data, features):
 
 
 
-our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
-#pd.read_csv('https://bit.ly/our_spotify_list_audio_data')
+#our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
+our_data = pd.read_csv('https://bit.ly/our_spotify_list_audio_data')
+our_data
 
 our_data_binned = binner(our_data, binned_cols)
 
@@ -135,6 +136,8 @@ features = ['danceability',
 preferences = create_feature_bin_counts_df(our_data_binned, features)
 #preferences.head(30)
 
+
+'''
 # Creating an HTML node
 def create_node_html(node: str, source_df: pd.DataFrame, node_col: str):
     rows = source_df.loc[source_df[node_col] == node].itertuples()
@@ -191,9 +194,9 @@ def choose_network(df, grouping_col, chosen_word, output_file_name, output_width
 
     return pairs
 
+'''
 
-
-louvain_network = choose_network(preferences, 'energy', 'name', 'preferences.html')
+#louvain_network = choose_network(preferences, 'energy', 'name', 'preferences.html')
 
 # Makes a dataframe showing number of shared signatures between each person
 synergy = pd.DataFrame()
