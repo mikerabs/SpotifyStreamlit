@@ -115,7 +115,7 @@ def create_feature_bin_counts_df(original_data, features):
 
 #our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
 our_data = pd.read_csv('https://bit.ly/our_spotify_list_audio_data')
-our_data
+#our_data
 
 our_data_binned = binner(our_data, binned_cols)
 
@@ -137,64 +137,64 @@ preferences = create_feature_bin_counts_df(our_data_binned, features)
 #preferences.head(30)
 
 
-'''
-# Creating an HTML node
-def create_node_html(node: str, source_df: pd.DataFrame, node_col: str):
-    rows = source_df.loc[source_df[node_col] == node].itertuples()
-    html_lis = []
-    for r in rows:
-        html_lis.append(f"""<li>Artist: {r.artist}<br>
-                                Playlist: {r.playlist_name}<br>"""
-                       )
-    html_ul = f"""<ul>{''.join(html_lis)}</ul>"""
-    return html_ul
 
-# Adding nodes from an Edgelist
-def add_nodes_from_edgelist(edge_list: list,
-                               source_df: pd.DataFrame,
-                               graph: nx.Graph,
-                               node_col: str):
-    graph = deepcopy(graph)
-    node_list = pd.Series(edge_list).apply(pd.Series).stack().unique()
-    for n in node_list:
-        graph.add_node(n, title=create_node_html(n, source_df, node_col), spring_length=1000)
-    return graph
+# # Creating an HTML node
+# def create_node_html(node: str, source_df: pd.DataFrame, node_col: str):
+#     rows = source_df.loc[source_df[node_col] == node].itertuples()
+#     html_lis = []
+#     for r in rows:
+#         html_lis.append(f"""<li>Artist: {r.artist}<br>
+#                                 Playlist: {r.playlist_name}<br>"""
+#                        )
+#     html_ul = f"""<ul>{''.join(html_lis)}</ul>"""
+#     return html_ul
 
-# Adding Louvain Communities
-def add_communities(G):
-    G = deepcopy(G)
-    partition = community_louvain.best_partition(G)
-    nx.set_node_attributes(G, partition, "group")
-    return G
+# # Adding nodes from an Edgelist
+# def add_nodes_from_edgelist(edge_list: list,
+#                                source_df: pd.DataFrame,
+#                                graph: nx.Graph,
+#                                node_col: str):
+#     graph = deepcopy(graph)
+#     node_list = pd.Series(edge_list).apply(pd.Series).stack().unique()
+#     for n in node_list:
+#         graph.add_node(n, title=create_node_html(n, source_df, node_col), spring_length=1000)
+#     return graph
 
-def choose_network(df, grouping_col, chosen_word, output_file_name, output_width=800):
+# # Adding Louvain Communities
+# def add_communities(G):
+#     G = deepcopy(G)
+#     partition = community_louvain.best_partition(G)
+#     nx.set_node_attributes(G, partition, "group")
+#     return G
 
-    # creating unique pairs
-    output_grouped = df.groupby([grouping_col])[chosen_word].apply(list).reset_index()
-    pairs = output_grouped[chosen_word].apply(lambda x: list(combinations(x, 2)))
+# def choose_network(df, grouping_col, chosen_word, output_file_name, output_width=800):
 
-    pairs2 = pairs.explode().dropna()
-    print(pairs2)
-    unique_pairs = pairs.explode().dropna().unique()
+#     # creating unique pairs
+#     output_grouped = df.groupby([grouping_col])[chosen_word].apply(list).reset_index()
+#     pairs = output_grouped[chosen_word].apply(lambda x: list(combinations(x, 2)))
 
-    # creating a new Graph
-    pyvis_graph = net.Network(notebook=True, width=output_width, height="1000", bgcolor="black", font_color="white")
-    G = nx.Graph()
-    # adding nodes
-    try:
-        G = add_nodes_from_edgelist(edge_list=unique_pairs, source_df=df, graph=G, node_col=chosen_word)
-    except Exception as e:
-        print(e)
-    # add edges
-    G.add_edges_from(unique_pairs)
-    # find communities
-    G = add_communities(G)
-    pyvis_graph.from_nx(G)
-    pyvis_graph.show(output_file_name)
+#     pairs2 = pairs.explode().dropna()
+#     print(pairs2)
+#     unique_pairs = pairs.explode().dropna().unique()
 
-    return pairs
+#     # creating a new Graph
+#     pyvis_graph = net.Network(notebook=True, width=output_width, height="1000", bgcolor="black", font_color="white")
+#     G = nx.Graph()
+#     # adding nodes
+#     try:
+#         G = add_nodes_from_edgelist(edge_list=unique_pairs, source_df=df, graph=G, node_col=chosen_word)
+#     except Exception as e:
+#         print(e)
+#     # add edges
+#     G.add_edges_from(unique_pairs)
+#     # find communities
+#     G = add_communities(G)
+#     pyvis_graph.from_nx(G)
+#     pyvis_graph.show(output_file_name)
 
-'''
+#     return pairs
+
+
 
 #louvain_network = choose_network(preferences, 'energy', 'name', 'preferences.html')
 
@@ -266,7 +266,7 @@ x = 2
 # of link_filtered above, but called links_clean to differentiate the two network creation
 # processes)
 links_clean=links.loc[ (links['value'] > x) & (links['Person1'] != links['Person2']) ]
-links_clean
+#links_clean
 
 # create a list of tuples (node 1, node 2, weight) for all connections
 weighted_edges = []
@@ -285,24 +285,41 @@ pos = nx.kamada_kawai_layout(graph)
 nodelist = graph.nodes()
 
 # Actually draw the network by drawing the nodes, then the edge, and then the labels
-'''
-nx.draw_networkx_nodes(graph,pos,
-                       nodelist=nodelist,
-                       node_size=400,
-                       node_color='black',
-                       alpha=0.7)
-nx.draw_networkx_edges(graph,pos,
-                       edgelist = widths.keys(),
-                       width=list(widths.values()),
-                       edge_color='darkblue',
-                       alpha=0.3)
-nx.draw_networkx_labels(graph, pos=pos,
-                        labels=dict(zip(nodelist,nodelist)),
-                        font_size=8,
-                        font_color='white')
 
-# set it to not show a box around the network, and the show the drawn network
-plt.box(False)
-plt.show()
-'''
+# nx.draw_networkx_nodes(graph,pos,
+#                        nodelist=nodelist,
+#                        node_size=400,
+#                        node_color='black',
+#                        alpha=0.7)
+# nx.draw_networkx_edges(graph,pos,
+#                        edgelist = widths.keys(),
+#                        width=list(widths.values()),
+#                        edge_color='darkblue',
+#                        alpha=0.3)
+# nx.draw_networkx_labels(graph, pos=pos,
+#                         labels=dict(zip(nodelist,nodelist)),
+#                         font_size=8,
+#                         font_color='white')
 
+# # set it to not show a box around the network, and the show the drawn network
+# plt.box(False)
+# plt.show()
+
+
+"""
+# Spotify Friend Finder
+Use the form below to find your username to see who you're most connected to music-taste wise!
+"""
+
+#STREAMLIT CODE
+import streamlit as st
+
+listOfUsers = ["mrabayda4", ]
+
+with st.form("user_data"):
+   st.write("Find My Concert Friends!")
+   my_data = st.selectbox('Pick your username from this list', listOfUsers)
+   st.form_submit_button('Submit my picks')
+
+# This is outside the form
+st.write(my_data)
