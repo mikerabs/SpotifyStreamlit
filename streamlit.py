@@ -51,7 +51,7 @@ def binner(dataframe, columns):
 
 #makes rule for binning preferences, threshold changeable with a default
 # Example: If someone has below 8 songs with low valence, they have a low preference for low valence
-def binRule(num, high_low = [8, 12]):
+def binRule(num, high_low = [30, 60]):
     if num < high_low[0]: # return low if count is below bottom threshold
         return "l"
     elif num > high_low[1]: # return high if count is above top threshold
@@ -101,13 +101,29 @@ def create_feature_bin_counts_df(original_data, features):
 
     return preferences
 
+def get_top_similar(graph, email, top_n=5):
+    """
+    Get the top N similar nodes for a given email node.
 
+    :param graph: The NetworkX graph.
+    :param email: The email identifier of the node.
+    :param top_n: Number of top similar nodes to return.
+    :return: A list of tuples with the format (node, similarity weight).
+    """
+    if email not in graph:
+        return "Email not found in the network."
+
+    neighbors = graph[email]
+    # Sorting neighbors based on weight
+    sorted_neighbors = sorted(neighbors.items(), key=lambda x: x[1]['weight'], reverse=True)
+    formatted_output = [(neighbor, data['weight']) for neighbor, data in sorted_neighbors[:top_n]]
+
+    return formatted_output
 
 
 
 #our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
 our_data = pd.read_csv('data.csv')
-our_data
 
 our_data_binned = binner(our_data, binned_cols)
 
@@ -278,24 +294,25 @@ nodelist = graph.nodes()
 
 # Actually draw the network by drawing the nodes, then the edge, and then the labels
 
-# nx.draw_networkx_nodes(graph,pos,
-#                        nodelist=nodelist,
-#                        node_size=400,
-#                        node_color='black',
-#                        alpha=0.7)
-# nx.draw_networkx_edges(graph,pos,
-#                        edgelist = widths.keys(),
-#                        width=list(widths.values()),
-#                        edge_color='darkblue',
-#                        alpha=0.3)
-# nx.draw_networkx_labels(graph, pos=pos,
-#                         labels=dict(zip(nodelist,nodelist)),
-#                         font_size=8,
-#                         font_color='white')
+nx.draw_networkx_nodes(graph,pos,
+                       nodelist=nodelist,
+                       node_size=400,
+                       node_color='green',
+                       alpha=0.7)
+nx.draw_networkx_edges(graph,pos,
+                       edgelist = widths.keys(),
+                       width=list(widths.values()),
+                       edge_color='gray',
+                       alpha=0.3)
+nx.draw_networkx_labels(graph, pos=pos,
+                        labels=dict(zip(nodelist,nodelist)),
+                        font_size=8,
+                        font_color='black')
 
-# # set it to not show a box around the network, and the show the drawn network
-# plt.box(False)
-# plt.show()
+# set it to not show a box around the network, and the show the drawn network
+plt.box(False)
+plt.savefig('network.png',format='png')
+
 
 
 """
@@ -306,7 +323,9 @@ Use the dropbox below to find and submit your username to see who you're most co
 #STREAMLIT CODE
 import streamlit as st
 
-listOfUsers = ["mrabayda4", ]
+listOfUsers = names
+
+st.image('network.png', caption='Network of current users')
 
 with st.form("user_data"):
    st.write("Find My Concert Friends!")
@@ -314,4 +333,7 @@ with st.form("user_data"):
    st.form_submit_button('Submit')
 
 # This is outside the form
-st.write(my_data)
+st.write("Top 5 Connections")
+table_df = pd.DataFrame(get_top_similar(graph, my_data), columns=['Email', 'Similarity Score'])
+table_df.index = table_df.index+1
+st.table(table_df)
