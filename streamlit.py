@@ -69,7 +69,7 @@ def create_feature_bin_counts_df(original_data, features):
     preferences = pd.DataFrame()
 
     # adds name column
-    names = list(set(original_data['person'].to_list()))
+    names = list(set(original_data['Email'].to_list()))
     preferences['name'] = names
 
 
@@ -77,15 +77,15 @@ def create_feature_bin_counts_df(original_data, features):
     for feature in features: #loops through music features
 
         # creates a list of the count of songs that were in the 'low' bin for the given music feature
-        lows = [original_data[original_data['person'] == name]
+        lows = [original_data[original_data['Email'] == name]
                 [f'{feature}_q_binned'].value_counts().to_dict()['l'] for name in names]
 
         # creates a similar list for count of songs in the 'medium' bin
-        mediums = [original_data[original_data['person'] == name]
+        mediums = [original_data[original_data['Email'] == name]
                 [f'{feature}_q_binned'].value_counts().to_dict()['m'] for name in names]
 
         # creates a similar list for count of songs in the 'high' bin
-        highs = [original_data[original_data['person'] == name]
+        highs = [original_data[original_data['Email'] == name]
                 [f'{feature}_q_binned'].value_counts().to_dict()['h'] for name in names]
 
         # creates an empty list for the preference signatures
@@ -193,7 +193,7 @@ preferences = create_feature_bin_counts_df(our_data_binned, features)
 # Makes a dataframe showing number of shared signatures between each person
 synergy = pd.DataFrame()
 # Get list of student names from our prior dataframe
-names = list(set(our_data_binned['person'].to_list()))
+names = list(set(our_data_binned['Email'].to_list()))
 # Add a new column in 'synergy' dataframe for the names
 synergy['name'] = names
 
