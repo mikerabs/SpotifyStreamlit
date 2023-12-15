@@ -119,7 +119,8 @@ def get_top_similar(graph, email, top_n=5):
     formatted_output = [(neighbor, data['weight']) for neighbor, data in sorted_neighbors[:top_n]]
 
     return formatted_output
-def create_top_n_subgraph(graph, email, top_n=5):
+
+def create_top_n_subgraph(graph, email, top_n=5, weight_threshold=2):
     if email not in graph:
         return None, "Email not found in the network."
 
@@ -129,7 +130,28 @@ def create_top_n_subgraph(graph, email, top_n=5):
 
     # Create the subgraph
     subgraph = graph.subgraph(top_emails)
+    # # Plot the subgraph
+    # plt.figure(figsize=(8, 6))
+    # pos = nx.spring_layout(subgraph)  # or any other layout you prefer
+    # nx.draw(subgraph, pos, with_labels=True, node_color='green', edge_color='gray', node_size=500, font_size=10)
+    
+    # Filter edges based on weight threshold
+    edges_to_keep = [(u, v) for u, v, d in subgraph.edges(data=True) if d['weight'] > weight_threshold]
+    subgraph = subgraph.edge_subgraph(edges_to_keep).copy()
 
+    # Get edge weights for plotting
+    widths = nx.get_edge_attributes(subgraph, "weight")
+
+    # Plot the subgraph
+    plt.figure(figsize=(4, 4))
+    pos = nx.kamada_kawai_layout(subgraph)  # layout for visualization
+    nx.draw_networkx_nodes(subgraph, pos, node_size=400, node_color='green', alpha=0.7)
+    nx.draw_networkx_edges(subgraph, pos, edgelist=widths.keys(), width=list(widths.values()), edge_color='gray', alpha=0.3)
+    nx.draw_networkx_labels(subgraph, pos, font_size=8, font_color='black')
+
+    # Save the plot
+    # Save the plot
+    plt.box(False)
     plt.savefig('subgraph.png',format='png')
 
 
@@ -341,10 +363,18 @@ st.image('network.png', caption='Network of current users')
 with st.form("user_data"):
    st.write("Find My Concert Friends!")
    my_data = st.selectbox('Pick your username from this list', listOfUsers)
-   st.form_submit_button('Submit')
+   submitted = st.form_submit_button('Submit')
 
-# This is outside the form
-st.write("Top 5 Connections")
-table_df = pd.DataFrame(get_top_similar(graph, my_data), columns=['Email', 'Similarity Score'])
-table_df.index = table_df.index+1
-st.table(table_df)
+   if submitted:
+       #subgraph here
+       create_top_n_subgraph(graph, my_data)
+       st.image('subgraph.png',caption='Your Top Connections!')
+       st.write("Top 5 Connections")
+       table_df = pd.DataFrame(get_top_similar(graph, my_data), columns=['Email', 'Similarity Score'])
+       table_df.index = table_df.index+1
+       st.table(table_df)
+
+
+
+
+
