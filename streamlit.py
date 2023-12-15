@@ -47,14 +47,6 @@ def binner(dataframe, columns):
                                                      duplicates='drop')
     return binned_data
 
-def add_name_column(dataframe):
-    '''adds column with playlist owner's name. Note: this only works if the input dataframe
-    has a column 'playlist_title' where the first part of the title is a person's name followed
-    by an underscore'''
-
-    # gets everything before the '_' in the playlist_title column
-    dataframe["person"] = dataframe["playlist_title"].str.split('_', expand=True)[0]
-    return dataframe
 
 
 #makes rule for binning preferences, threshold changeable with a default
@@ -114,12 +106,12 @@ def create_feature_bin_counts_df(original_data, features):
 
 
 #our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
-our_data = pd.read_csv('https://bit.ly/our_spotify_list_audio_data')
-#our_data
+our_data = pd.read_csv('data.csv')
+our_data
 
 our_data_binned = binner(our_data, binned_cols)
 
-our_data_binned = add_name_column(our_data_binned)
+#our_data_binned = add_name_column(our_data_binned)
 
 # the musical features that we binned
 features = ['danceability',
@@ -308,7 +300,7 @@ nodelist = graph.nodes()
 
 """
 # Spotify Friend Finder
-Use the form below to find your username to see who you're most connected to music-taste wise!
+Use the dropbox below to find and submit your username to see who you're most connected to music-taste wise!
 """
 
 #STREAMLIT CODE
@@ -319,7 +311,7 @@ listOfUsers = ["mrabayda4", ]
 with st.form("user_data"):
    st.write("Find My Concert Friends!")
    my_data = st.selectbox('Pick your username from this list', listOfUsers)
-   st.form_submit_button('Submit my picks')
+   st.form_submit_button('Submit')
 
 # This is outside the form
 st.write(my_data)
