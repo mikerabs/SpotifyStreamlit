@@ -119,7 +119,18 @@ def get_top_similar(graph, email, top_n=5):
     formatted_output = [(neighbor, data['weight']) for neighbor, data in sorted_neighbors[:top_n]]
 
     return formatted_output
+def create_top_n_subgraph(graph, email, top_n=5):
+    if email not in graph:
+        return None, "Email not found in the network."
 
+    # Get the top N connections for the specified email
+    top_connections = get_top_similar(graph, email, top_n)
+    top_emails = [email] + [connection[0] for connection in top_connections]
+
+    # Create the subgraph
+    subgraph = graph.subgraph(top_emails)
+
+    plt.savefig('subgraph.png',format='png')
 
 
 #our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
