@@ -17,6 +17,7 @@ from pyvis import network as net
 from itertools import combinations
 from copy import deepcopy
 
+
 # specify a list of columns to be binned and labeled
 binned_cols = ['danceability',
  'energy',
@@ -154,6 +155,34 @@ def create_top_n_subgraph(graph, email, top_n=5, weight_threshold=2):
     plt.box(False)
     plt.savefig('subgraph.png',format='png')
 
+
+
+import seaborn as sns
+
+def summary_stats(csv_name):
+    data = pd.read_csv(csv_name)
+    summary_stats_data = [[round(data['duration_ms'].mean()/60000, 2), round(data['duration_ms'].std()/60000, 2), data['artist_name'].mode()[0], 'Major' if (data['mode'].mode()[0] == 1) else 'Minor']]
+    df = pd.DataFrame(summary_stats_data, columns=['Average Duration (min)', 'Duration SD (min)', 'Most Common Artist', 'Most Common Mode'])
+    return df
+
+# to test with Henry's data
+#summary_stats("spotifyhbritton@haverford.edu.csv")
+
+def feature_score_boxplot(csv_name):
+    data = pd.read_csv(csv_name)
+    new_data = data[['danceability', 'energy', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence']]
+    new_data = pd.melt(new_data, value_vars=['danceability', 'energy', 'speechiness', 'acousticness', 'instrumentalness', 'liveness', 'valence'])
+    
+    plt.figure(figsize=(8,8))
+    plot = sns.boxplot(x = 'variable', y = 'value', data = new_data)
+    plot.set_xticklabels(plot.get_xticklabels(), rotation=45)
+    plot.set(xlabel='Music Feature',
+           ylabel='Score',
+           title='Distributions of Music Feature Scores')
+    plt.savefig('summarystats.png', format = 'png')
+
+# to test with Henry's data
+#feature_score_boxplot("spotifyhbritton@haverford.edu.csv")
 
 #our_data = pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vRuxCwGLYB351Dzh7yusurYNh7lMtF-VdVqnAAlaO6jgmg1dpCR5LheVjjQFIlbjwA5I3Toi2s1u1nL/pub?output=csv')
 our_data = pd.read_csv('data.csv')
@@ -366,13 +395,28 @@ with st.form("user_data"):
    submitted = st.form_submit_button('Submit')
 
    if submitted:
-       #subgraph here
-       create_top_n_subgraph(graph, my_data)
-       st.image('subgraph.png',caption='Your Top Connections!')
-       st.write("Top 5 Connections")
-       table_df = pd.DataFrame(get_top_similar(graph, my_data), columns=['Email', 'Similarity Score'])
-       table_df.index = table_df.index+1
-       st.table(table_df)
+        #create subplots
+        create_top_n_subgraph(graph, my_data)
+        user_csv_path = "spotify_files/spotify"+ str(my_data)+ ".csv"
+        feature_score_boxplot(user_csv_path)
+
+        #display Top Conections subplot and table
+        st.image('subgraph.png',caption='Your Top Connections!')
+        st.write("Top 5 Connections")
+        table_df = pd.DataFrame(get_top_similar(graph, my_data), columns=['Email', 'Similarity Score'])
+        table_df.index = table_df.index+1
+        st.table(table_df)
+
+        #display summary stats subplots and table
+        st.image('summarystats.png', caption='Personal Stats for your Top 100 Songs')
+        st.write("Other Stats")
+        ss = summary_stats(user_csv_path)
+        ss.index = ss.index+1
+        ss
+        #st.table(summary_stats(user_csv_path))
+
+        
+
 
 
 

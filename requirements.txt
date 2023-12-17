@@ -8,3 +8,4 @@ requests
 networkx
 matplotlib
 plotly
+seaborn
