@@ -74,7 +74,7 @@ def link_to_id(link):
     return ans[0]
 
 
-def gen_csv(link, email, path)
+def gen_csv(link, email, path):
     playlist_id_wr = link_to_id(link)
     name = email
 
