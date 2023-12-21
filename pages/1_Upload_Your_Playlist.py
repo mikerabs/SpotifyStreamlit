@@ -1,6 +1,7 @@
 import streamlit as st
 from merge_files import gen_csv
 from merge_files import merge_csv_files
+import os
 
 with st.form("playlist_data"):
    st.write("Upload your own Spotify Top 100 songs here!")
