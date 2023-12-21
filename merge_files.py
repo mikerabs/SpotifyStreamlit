@@ -7,7 +7,7 @@ import altair as alt
 import plotly.graph_objects as go
 import requests
 import inspect
-import spotipy as sp
+import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 import networkx as nx
