@@ -18,18 +18,18 @@ with st.form("playlist_data"):
    if submitted:
     #Gotta do some control here just in case people hit the submit button before putting anything in
 
-    duplicate_email = False
-    # Get a list of all CSV files in the folder
-    csv_files = [file for file in os.listdir("spotify_files") if file.endswith('.csv')]
-    for i in range(len(csv_files)):
-        if duplicate_email == True:
-           break
-        if email_data in csv_files[i]:
-           st.write("Please do not submit duplicate playlists from the same email")
-           duplicate_email = True
+    # duplicate_email = False
+    # # Get a list of all CSV files in the folder
+    # csv_files = [file for file in os.listdir("spotify_files") if file.endswith('.csv')]
+    # for i in range(len(csv_files)):
+    #     if duplicate_email == True:
+    #        break
+    #     if email_data in csv_files[i]:
+    #        st.write("Please do not submit duplicate playlists from the same email")
+    #        duplicate_email = True
     
-    if duplicate_email == True:
-       st.write("Please refresh and resubmit")
-    else:
-       gen_csv(playlist_data, email_data, '/spotify_files/spotify'+str(email_data)+'.csv')
-       merge_csv_files('','spotify_files')
+    # if duplicate_email == True:
+    #    st.write("Please refresh and resubmit")
+    # else:
+    gen_csv(playlist_data, email_data, '/spotify_files/spotify'+str(email_data)+'.csv')
+    merge_csv_files('','spotify_files')
