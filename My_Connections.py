@@ -16,6 +16,7 @@ import pyvis
 from pyvis import network as net
 from itertools import combinations
 from copy import deepcopy
+import scipy
 
 
 # specify a list of columns to be binned and labeled
